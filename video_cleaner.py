@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 
 mode = 'production'  # 'interactive' / 'exploration' / 'production'
+keep_only_left_side = False
 
 print('Started')
 
@@ -17,6 +18,9 @@ outname = 'demo1_res.mp4'
 images_num = 6
 if mode == 'production':
     images_num = 2
+        
+if keep_only_left_side:
+    cap_width = int(cap_width/2) 
 
 out = cv2.VideoWriter(outname, fourcc, cap_fps, (images_num*cap_width, cap_height))
 
@@ -27,6 +31,9 @@ while cap.isOpened():
     
     if ret==True:
    
+        if keep_only_left_side:
+            frame = frame[:, :cap_width]
+
         # B/W Thresholding (pixels > THR ==> 255, pixels < 255 ==> 0):
         _, thresh = cv2.threshold(frame, int(0.9*frame.max()), 255, cv2.THRESH_BINARY)
        
