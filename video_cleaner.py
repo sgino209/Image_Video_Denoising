@@ -17,7 +17,7 @@ outname = 'demo1_res.mp4'
 
 images_num = 6
 if mode == 'production':
-    images_num = 2
+    images_num = 3
         
 if keep_only_left_side:
     cap_width = int(cap_width/2) 
@@ -44,21 +44,23 @@ while cap.isOpened():
             bilateral = cv2.bilateralFilter(frame, 35, 0, 0)
             thresh_median7 = cv2.medianBlur(thresh,7)
         thresh_median15 = cv2.medianBlur(thresh, 15)
-        _, thresh_median15_bw = cv2.threshold(thresh_median15, int(0.6*thresh_median15.max()), 255, cv2.THRESH_BINARY)
 
         # Visualization:
         cv2.putText(frame, "Original", (int(cap_width/2)-50,60), cv2.FONT_HERSHEY_SIMPLEX, 1, 255)
+        cv2.putText(thresh, "Threshold", (int(cap_width/2)-50,60), cv2.FONT_HERSHEY_SIMPLEX, 1, 255)
+        cv2.putText(thresh_median15, "Thresh + Median 15", (int(cap_width/2-50),60), cv2.FONT_HERSHEY_SIMPLEX, 1, 255)
         if mode != 'production':
             cv2.putText(median, "Median 35", (int(cap_width/2)-50,60), cv2.FONT_HERSHEY_SIMPLEX, 1, 255)
             cv2.putText(gaussian, "Gaussian 35", (int(cap_width/2)-50,60), cv2.FONT_HERSHEY_SIMPLEX, 1, 255)
             cv2.putText(bilateral, "Bilateral 35", (int(cap_width/2)-50,60), cv2.FONT_HERSHEY_SIMPLEX, 1, 255)
-            cv2.putText(thresh_median7, "Thresh + Median 7", (int(cap_width/2)-50,60), cv2.FONT_HERSHEY_SIMPLEX, 1, 255)
-            cv2.putText(thresh_median15, "Thresh + Median 15", (int(cap_width/2)-50,60), cv2.FONT_HERSHEY_SIMPLEX, 1, 255)
+            cv2.putText(thresh_median7, "Thresh + Median 7", (int(cap_width/2)-100,60), cv2.FONT_HERSHEY_SIMPLEX, 1, 255)
         
+        _, thresh_median15_bw = cv2.threshold(thresh_median15, int(0.6*thresh_median15.max()), 255, cv2.THRESH_BINARY)
+ 
         if mode == 'production':
-            compare = np.concatenate((frame, thresh_median15_bw), axis=1)
+            compare = np.concatenate((frame, thresh, thresh_median15_bw), axis=1)
         else:
-            compare = np.concatenate((frame, median, gaussian, bilateral, thresh_median7, thresh_median15), axis=1)
+            compare = np.concatenate((frame, median, gaussian, bilateral, thresh_median7, thresh_median15_bw), axis=1)
 
         out.write(compare)
 
