@@ -22,15 +22,17 @@ if mode == 'production':
 if keep_only_left_side:
     cap_width = int(cap_width/2) 
 
-out = cv2.VideoWriter(outname, fourcc, cap_fps, (images_num*cap_width, cap_height))
+out = cv2.VideoWriter(outname, fourcc, cap_fps, (images_num*cap_width, cap_height), 0)
 
 # Main Course:
 while cap.isOpened():
     
-    ret, frame = cap.read()
-    
+    ret, frame_rgb = cap.read()
+ 
     if ret==True:
    
+        frame = cv2.cvtColor(frame_rgb, cv2.COLOR_BGR2GRAY)
+
         if keep_only_left_side:
             frame = frame[:, :cap_width]
 
@@ -66,7 +68,7 @@ while cap.isOpened():
 
         # Interactive:
         if mode == 'interactive':
-            cv2.imshow('compare', compare)        
+            cv2.imshow('compare', compare)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
     else:
