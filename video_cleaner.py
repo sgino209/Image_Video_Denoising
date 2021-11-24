@@ -40,8 +40,8 @@ while cap.isOpened():
         _, thresh = cv2.threshold(frame, int(0.9*frame.max()), 255, cv2.THRESH_BINARY)
        
         # Filtering: 
-        median = cv2.medianBlur(frame, 35)
         if mode != 'production':
+            median = cv2.medianBlur(frame, 35)
             gaussian = cv2.GaussianBlur(frame, (35,35), 0)
             bilateral = cv2.bilateralFilter(frame, 35, 0, 0)
             thresh_median7 = cv2.medianBlur(thresh,7)
